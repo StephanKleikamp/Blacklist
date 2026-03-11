@@ -83,6 +83,10 @@ match (true) {
         $pass = require_str($b, 'password', 200);
         if (strlen($pass) < 6) json_err('Passwort mindestens 6 Zeichen');
         $pdo = db();
+        // Registrierung sperren, sobald bereits ein Konto existiert
+        if ((int) $pdo->query('SELECT COUNT(*) FROM clear_users')->fetchColumn() >= 1) {
+            json_err('Registrierung ist deaktiviert.', 403);
+        }
         if ($pdo->query("SELECT COUNT(*) FROM clear_users WHERE username = " . $pdo->quote($user))->fetchColumn()) {
             json_err('Benutzername bereits vergeben');
         }
@@ -116,6 +120,11 @@ match (true) {
     $action === 'me' => (function () {
         if (empty($_SESSION['user_id'])) json_err('Nicht eingeloggt', 401);
         json_ok(['username' => $_SESSION['username']]);
+    })(),
+
+    $action === 'registration_open' => (function () {
+        $count = (int) db()->query('SELECT COUNT(*) FROM clear_users')->fetchColumn();
+        json_ok(['open' => $count === 0]);
     })(),
 
     // ── Lists ───────────────────────────────────────────────

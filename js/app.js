@@ -532,4 +532,12 @@ function esc(str) {
 }
 
 // ── Boot ─────────────────────────────────────────────────────
+// Registrieren-Button ausblenden, falls Registrierung gesperrt ist
+(async () => {
+  try {
+    const { open } = await api.get('registration_open');
+    if (!open) document.getElementById('btn-show-register').classList.add('hidden');
+  } catch { /* ignorieren */ }
+})();
+
 checkSession();
