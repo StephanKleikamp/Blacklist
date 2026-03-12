@@ -206,7 +206,8 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
-  padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+  /* extra bottom padding so last item isn't hidden behind quick-add bar */
+  padding: 12px 0 calc(72px + env(safe-area-inset-bottom));
   -webkit-overflow-scrolling: touch;
 }
 
@@ -358,6 +359,86 @@ html, body {
   line-height: 1.4;
   word-break: break-word;
   transition: opacity var(--transition);
+  cursor: text;
+}
+
+/* inline edit input that replaces the text span */
+.item-row__edit-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.4);
+  color: #fff;
+  font-size: .97rem;
+  line-height: 1.4;
+  outline: none;
+  padding: 0 2px;
+  font-family: var(--font);
+}
+
+/* ============================================================
+   QUICK-ADD BAR
+============================================================ */
+.quick-add-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
+}
+
+.quick-add-input {
+  flex: 1;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 22px;
+  color: #fff;
+  font-size: .97rem;
+  font-family: var(--font);
+  padding: 10px 16px;
+  outline: none;
+  transition: border-color var(--transition);
+  min-width: 0;
+}
+
+.quick-add-input:focus { border-color: rgba(255,255,255,.35); }
+.quick-add-input::placeholder { color: rgba(255,255,255,.3); }
+
+.quick-add-btn {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition), transform .1s;
+}
+
+.quick-add-btn:active  { transform: scale(.9); }
+.quick-add-btn:hover   { opacity: .85; }
+.quick-add-btn:disabled { opacity: .35; cursor: default; }
+
+.quick-color-input {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: hidden;
 }
 
 /* ============================================================

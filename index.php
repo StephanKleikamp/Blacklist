@@ -44,14 +44,20 @@
   <header class="app-header">
     <button id="btn-logout" class="icon-btn" title="Ausloggen">&#x2715;</button>
     <h1 class="header-title">Meine Listen</h1>
-    <button id="btn-add-list" class="icon-btn icon-btn--add" title="Neue Liste">&#x2B;</button>
+    <button id="btn-add-list" class="icon-btn icon-btn--add hidden" title="Neue Liste">&#x2B;</button>
   </header>
 
   <ul id="list-container" class="list-container">
     <!-- rendered by JS -->
   </ul>
 
-  <p id="lists-empty" class="empty-hint hidden">Tippe auf + um eine neue Liste anzulegen.</p>
+  <p id="lists-empty" class="empty-hint hidden">Tippe unten, um deine erste Liste anzulegen.</p>
+
+  <div class="quick-add-bar" id="quick-add-list-bar">
+    <input type="color" id="quick-list-color" value="#FF6B6B" class="quick-color-input" title="Farbe wählen">
+    <input type="text" id="quick-list-input" class="quick-add-input" placeholder="Neue Liste..." maxlength="255" autocomplete="off">
+    <button id="quick-list-submit" class="quick-add-btn" title="Hinzufügen">&#x2BA1;</button>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -61,14 +67,19 @@
   <header class="app-header" id="items-header">
     <button id="btn-back" class="icon-btn" title="Zurück">&#x2190;</button>
     <h1 id="items-title" class="header-title editable" title="Tippen zum Umbenennen">Liste</h1>
-    <button id="btn-add-item" class="icon-btn icon-btn--add" title="Neues Item">&#x2B;</button>
+    <button id="btn-add-item" class="icon-btn icon-btn--add hidden" title="Neues Item">&#x2B;</button>
   </header>
 
   <ul id="item-container" class="item-container">
     <!-- rendered by JS -->
   </ul>
 
-  <p id="items-empty" class="empty-hint hidden">Tippe auf + um ein neues Element hinzuzufügen.</p>
+  <p id="items-empty" class="empty-hint hidden">Tippe unten, um das erste Element hinzuzufügen.</p>
+
+  <div class="quick-add-bar" id="quick-add-item-bar">
+    <input type="text" id="quick-item-input" class="quick-add-input" placeholder="Neues Element..." maxlength="500" autocomplete="off">
+    <button id="quick-item-submit" class="quick-add-btn" title="Hinzufügen">&#x2BA1;</button>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════

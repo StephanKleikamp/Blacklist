@@ -207,6 +207,7 @@ function openList(list) {
   itemsHeader.style.borderBottom = `2px solid ${list.color}`;
   showScreen('screen-items');
   loadItems();
+  setTimeout(() => document.getElementById('quick-item-input')?.focus(), 300);
 }
 
 document.getElementById('btn-back').addEventListener('click', () => {
@@ -239,6 +240,12 @@ function renderItems() {
 
     // tap check circle = toggle complete
     li.querySelector('.item-check').addEventListener('click', () => toggleItem(item));
+
+    // tap text = inline edit
+    li.querySelector('.item-row__text').addEventListener('click', e => {
+      if (e.target.closest('[data-drag]')) return;
+      startInlineEdit(li, item);
+    });
 
     itemContainer.appendChild(li);
 
@@ -276,6 +283,98 @@ async function deleteItem(id) {
 async function saveItemOrder(ids) {
   await api.post('items/reorder', { ids, list_id: state.currentList.id });
 }
+
+// Inline edit: replace text span with an input, save on blur/Enter
+function startInlineEdit(li, item) {
+  const textSpan = li.querySelector('.item-row__text');
+  if (!textSpan || li.querySelector('.item-row__edit-input')) return; // already editing
+
+  const input = document.createElement('input');
+  input.type      = 'text';
+  input.className = 'item-row__edit-input';
+  input.value     = item.text;
+  input.maxLength = 500;
+  textSpan.replaceWith(input);
+  input.focus();
+  input.select();
+
+  async function save() {
+    const newText = input.value.trim();
+    const span    = document.createElement('span');
+    span.className = 'item-row__text';
+    if (newText && newText !== item.text) {
+      item.text  = newText;
+      span.innerHTML = esc(newText);
+      await api.post('items/update', { id: item.id, text: newText }).catch(console.error);
+    } else {
+      span.innerHTML = esc(item.text);
+    }
+    // re-attach click handler
+    span.addEventListener('click', e => {
+      if (e.target.closest('[data-drag]')) return;
+      startInlineEdit(li, item);
+    });
+    input.replaceWith(span);
+  }
+
+  input.addEventListener('blur',    save);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = item.text; input.blur(); }
+  });
+}
+
+// ── Quick-add bars ───────────────────────────────────────────
+const quickListInput  = document.getElementById('quick-list-input');
+const quickListColor  = document.getElementById('quick-list-color');
+const quickListSubmit = document.getElementById('quick-list-submit');
+const quickItemInput  = document.getElementById('quick-item-input');
+const quickItemSubmit = document.getElementById('quick-item-submit');
+
+async function submitNewList() {
+  const text = quickListInput.value.trim();
+  if (!text) return;
+  quickListSubmit.disabled = true;
+  try {
+    const list = await api.post('lists/create', { title: text, color: quickListColor.value });
+    state.lists.push(list);
+    renderLists();
+    quickListInput.value = '';
+    // pick a new random color for next entry
+    quickListColor.value = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+    quickListInput.focus();
+  } finally {
+    quickListSubmit.disabled = false;
+  }
+}
+
+async function submitNewItem() {
+  const text = quickItemInput.value.trim();
+  if (!text) return;
+  quickItemSubmit.disabled = true;
+  try {
+    const item = await api.post('items/create', { list_id: state.currentList.id, text });
+    state.items.push(item);
+    renderItems();
+    quickItemInput.value = '';
+    quickItemInput.focus();
+    // scroll to bottom so new item is visible
+    itemContainer.scrollTop = itemContainer.scrollHeight;
+  } finally {
+    quickItemSubmit.disabled = false;
+  }
+}
+
+quickListSubmit.addEventListener('click', submitNewList);
+quickListInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitNewList(); });
+
+quickItemSubmit.addEventListener('click', submitNewItem);
+quickItemInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitNewItem(); });
+
+// focus quick-item input when items screen becomes active
+document.getElementById('btn-back').addEventListener('click', () => {
+  quickItemInput.value = '';
+}, { capture: true });
 
 // Rename list by tapping title
 itemsTitle.addEventListener('click', () => {
