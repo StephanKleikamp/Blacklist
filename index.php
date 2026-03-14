@@ -20,15 +20,15 @@
     <p class="auth-sub">Deine Listen, überall.</p>
 
     <form id="form-login" autocomplete="on">
-      <input type="text"     id="auth-username" name="username" placeholder="Benutzername" autocomplete="username" required>
-      <input type="password" id="auth-password" name="password" placeholder="Passwort"     autocomplete="current-password" required>
+      <input type="text"     id="auth-username" name="username" placeholder="Benutzername" autocomplete="section-blacklist username" required>
+      <input type="password" id="auth-password" name="password" placeholder="Passwort"     autocomplete="section-blacklist current-password" required>
       <button type="submit" class="btn-primary">Einloggen</button>
       <button type="button" id="btn-show-register" class="btn-ghost">Noch kein Konto? Registrieren</button>
     </form>
 
     <form id="form-register" class="hidden" autocomplete="on">
-      <input type="text"     id="reg-username" name="username" placeholder="Benutzername" autocomplete="username" required>
-      <input type="password" id="reg-password" name="password" placeholder="Passwort (min. 6 Zeichen)" autocomplete="new-password" required>
+      <input type="text"     id="reg-username" name="username" placeholder="Benutzername" autocomplete="section-blacklist username" required>
+      <input type="password" id="reg-password" name="password" placeholder="Passwort (min. 6 Zeichen)" autocomplete="section-blacklist new-password" required>
       <button type="submit" class="btn-primary">Konto erstellen</button>
       <button type="button" id="btn-show-login" class="btn-ghost">Zurück zum Login</button>
     </form>
